@@ -31,3 +31,6 @@ Python · SQL · Linux · Git · GitHub
 ## যোগাযোগ
 
 LinkedIn: https://www.linkedin.com/in/ramjanalideveloper/
+
+
+- Week 02: Learned Git basics, branching, commits, remote repositories, and pull requests.
