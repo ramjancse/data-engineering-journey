@@ -1,0 +1,49 @@
+
+# Python
+.venv/
+venv/
+__pycache__/
+*.py[cod]
+*.egg-info/
+.pytest_cache/
+.mypy_cache/
+.ruff_cache/
+
+# Environment variables and secrets
+.env
+.env.*
+!.env.example
+*.key
+credentials.json
+secrets.json
+
+# Large data files
+*.csv
+*.log
+*.parquet
+*.xlsx
+*.xls
+data/
+
+# Jupyter Notebook
+.ipynb_checkpoints/
+
+# Database files
+*.sqlite3
+*.db
+
+# System files
+.DS_Store
+Thumbs.db
+desktop.ini
+
+# Editors
+.vscode/
+.idea/
+
+# Node.js
+node_modules/
+
+# Temporary files
+*.tmp
+*.bak
