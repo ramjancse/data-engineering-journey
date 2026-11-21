@@ -13,6 +13,7 @@
 """
 
 import os
+import my_tools
 
 BASE_DIR = os.path.dirname(os.path.abspath(__file__))
 PATH = os.path.join(
@@ -21,20 +22,20 @@ PATH = os.path.join(
 )
 
 
-def clean_amount(text):
-    """৳ আর কমা সরিয়ে সংখ্যায় ফেরত।"""
-    return float(text.strip().replace("৳", "").replace(",", ""))
+# def clean_amount(text):
+#     """৳ আর কমা সরিয়ে সংখ্যায় ফেরত।"""
+#     return float(text.strip().replace("৳", "").replace(",", ""))
 
 
-def taka(amount):
-    """সংখ্যাকে টাকার format-এ ফেরত।"""
-    return f"৳{amount:.2f}"
+# def taka(amount):
+#     """সংখ্যাকে টাকার format-এ ফেরত।"""
+#     return f"৳{amount:.2f}"
 
 
-def read_lines(path):
-    """ফাইল পড়ে লাইনগুলোর list ফেরত দিন।"""
-    with open(path, encoding="utf-8") as fh:
-        return fh.read().strip().split("\n")
+# def read_lines(path):
+#     """ফাইল পড়ে লাইনগুলোর list ফেরত দিন।"""
+#     with open(path, encoding="utf-8") as fh:
+#         return fh.read().strip().split("\n")
 
     
 # ============================================================
@@ -47,7 +48,7 @@ def calculate_totals(lines):
     for raw in lines:
         parts = raw.split(";")
 
-        amount = clean_amount(parts[5])
+        amount = my_tools.clean_amount(parts[5])
         payment = parts[6].strip().lower()
         status = parts[7].strip().lower()
 
@@ -110,18 +111,18 @@ def calculate_totals(lines):
 
 # TODO ৫
 def main():
-    lines = read_lines(PATH)
+    lines = my_tools.read_lines(PATH)
     totals = calculate_totals(lines)
 
     print("payment ধরে হিসাব (বাতিল বাদে)")
     print()
 
     for payment, data in totals.items():
-        print(f"{payment:<18} {data['count']}টা   {taka(data['total'])}")
+        print(f"{payment:<18} {data['count']}টা   {my_tools.taka(data['total'])}")
 
     grand_total = sum(data["total"] for data in totals.values())
     print()
-    print(f"সব মিলিয়ে: {taka(grand_total)}")
+    print(f"সব মিলিয়ে: {my_tools.taka(grand_total)}")
 
 if __name__ == "__main__":
     main()
