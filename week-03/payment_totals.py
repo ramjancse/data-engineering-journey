@@ -20,67 +20,50 @@ PATH = os.path.join(
     "ostad-de-bootcamp", "module-02", "data", "raw_sales.txt"
 )
 
-with open(PATH, encoding="utf-8") as fh:
-    lines = fh.read().strip().split("\n")
+
+def clean_amount(text):
+    """৳ আর কমা সরিয়ে সংখ্যায় ফেরত।"""
+    return float(text.strip().replace("৳", "").replace(",", ""))
 
 
+def taka(amount):
+    """সংখ্যাকে টাকার format-এ ফেরত।"""
+    return f"৳{amount:.2f}"
+
+
+def read_lines(path):
+    """ফাইল পড়ে লাইনগুলোর list ফেরত দিন।"""
+    with open(path, encoding="utf-8") as fh:
+        return fh.read().strip().split("\n")
+
+    
 # ============================================================
 #  লেভেল ১ — শুধু bkash
 #  লক্ষ্য:  bkash  3টা  ৳2484.00
 # ============================================================
+def calculate_totals(lines):
+    totals = {}
 
-bkash_total = 0.0
-bkash_count = 0
+    for raw in lines:
+        parts = raw.split(";")
 
-nagad_total = 0.0
-nagad_count = 0
+        amount = clean_amount(parts[5])
+        payment = parts[6].strip().lower()
+        status = parts[7].strip().lower()
 
-card_total = 0.0
-card_count = 0
+        if status == "cancelled":
+            continue
 
+        if payment not in totals:
+            totals[payment] = {
+                "count": 0,
+                "total": 0.0
+            }
 
-for raw in lines:
-    parts   = raw.split(";")
-    amount  = float(parts[5].strip().replace("৳", "").replace(",", ""))
-    payment = parts[6].strip().lower()
-    status  = parts[7].strip().lower()
+        totals[payment]["count"] += 1
+        totals[payment]["total"] += amount
 
-    # --- এই চারটা লাইন আপনাকে কিছু করতে হবে না, উপরেরগুলো দেওয়াই আছে ---
-
-    # TODO ১: বাতিল অর্ডার বাদ দিন
-    #   if status == "cancelled":
-    #       continue
-
-    # TODO ২: payment যদি bkash হয়, তাহলে যোগ করুন
-    #   if payment == "bkash":
-    #       bkash_total = bkash_total + amount
-    #       bkash_count = bkash_count + 1
-
-    if status == "cancelled":
-        continue
-
-    if payment == "bkash":
-        bkash_total += amount
-        bkash_count += 1
-
-    elif payment == "nagad":
-        nagad_total += amount
-        nagad_count += 1
-
-    elif payment == "card":
-        card_total += amount
-        card_count += 1
-
-
-print("লেভেল ১")
-print(f"bkash  {bkash_count}টা  ৳{bkash_total:.2f}")
-print()
-
-print("লেভেল ২")
-print(f"nagad  {nagad_count}টা  ৳{nagad_total:.2f}")
-print(f"card   {card_count}টা  ৳{card_total:.2f}")
-
-
+    return totals
 # ============================================================
 #  লেভেল ২ — আরো দুইটা যোগ করুন
 #  লক্ষ্য:  nagad  2টা  ৳908.00
@@ -126,3 +109,19 @@ print(f"card   {card_count}টা  ৳{card_total:.2f}")
 # (হ্যাঁ, এটা ক্লান্তিকর। সোমবার dictionary শিখলে এই পুরোটা তিন লাইনে নামবে।)
 
 # TODO ৫
+def main():
+    lines = read_lines(PATH)
+    totals = calculate_totals(lines)
+
+    print("payment ধরে হিসাব (বাতিল বাদে)")
+    print()
+
+    for payment, data in totals.items():
+        print(f"{payment:<18} {data['count']}টা   {taka(data['total'])}")
+
+    grand_total = sum(data["total"] for data in totals.values())
+    print()
+    print(f"সব মিলিয়ে: {taka(grand_total)}")
+
+if __name__ == "__main__":
+    main()
